@@ -9,7 +9,7 @@ export default defineConfig({
   clean: true,
   external: [
     '@gaia-tools/coeus-api-client',
-    '@gaia-tools/aphrodite-core',
+    '@gaia-tools/aphrodite',
     '@gaia-tools/aphrodite-shared',
     'd3',
   ],

@@ -1,5 +1,5 @@
 /**
- * @gaia-tools/bundle-core
+ * @gaia-tools/iris-core
  * 
  * Lightweight, framework-agnostic client bundle for Gaia astrological charting.
  * 
@@ -10,7 +10,7 @@
  * 
  * @example
  * ```typescript
- * import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@gaia-tools/bundle-core';
+ * import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@gaia-tools/iris-core';
  * 
  * // Create API client
  * const api = createApiClient('http://localhost:8000/api');
@@ -40,8 +40,8 @@
 // Re-export API client
 export { createApiClient, type ApiClient } from '@gaia-tools/coeus-api-client';
 
-// Re-export ChartWheel from aphrodite-core
-export { ChartWheel, type ChartWheelOptions, type Theme } from '@gaia-tools/aphrodite-core';
+// Re-export ChartWheel from aphrodite
+export { ChartWheel, type ChartWheelOptions, type Theme } from '@gaia-tools/aphrodite';
 
 // Re-export utilities from coeus-api-client
 export {
@@ -74,9 +74,9 @@ export type {
   AspectSet,
 } from '@gaia-tools/coeus-api-client';
 
-// Re-export config types from aphrodite-core
+// Re-export config types from aphrodite
 export type {
   VisualConfig,
   GlyphConfig,
-} from '@gaia-tools/aphrodite-core';
+} from '@gaia-tools/aphrodite';
 

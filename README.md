@@ -1,10 +1,10 @@
-# @iris-core
+# @gaia-tools/iris-core
 
 Lightweight, framework-agnostic client bundle for Gaia astrological charting.
 
 ## Overview
 
-`@iris-core` provides a unified interface for working with the Gaia astrological charting system. It combines:
+`@gaia-tools/iris-core` provides a unified interface for working with the Gaia astrological charting system. It combines:
 
 - **API Client** - Communicate with the Python `coeus-api` backend
 - **Chart Rendering** - Render charts using the `ChartWheel` class
@@ -15,7 +15,7 @@ This package is designed to be framework-agnostic and can be used with vanilla J
 ## Installation
 
 ```bash
-npm install @iris-core @gaia-tools/coeus-api-client @gaia-tools/aphrodite-core @gaia-tools/aphrodite-shared d3
+npm install @gaia-tools/iris-core @gaia-tools/coeus-api-client @gaia-tools/aphrodite @gaia-tools/aphrodite-shared d3
 ```
 
 ## Quick Start
@@ -26,7 +26,7 @@ import {
   ChartWheel,
   convertEphemerisToRender,
   buildIndexes,
-} from '@iris-core';
+} from '@gaia-tools/iris-core';
 
 // Create API client
 const api = createApiClient('http://localhost:8000/api');
@@ -135,7 +135,7 @@ const request = buildRenderRequestFromResponse(renderData);
 ### Vanilla JavaScript
 
 ```typescript
-import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@iris-core';
+import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@gaia-tools/iris-core';
 
 // Use directly
 const api = createApiClient('http://localhost:8000/api');
@@ -146,7 +146,7 @@ const api = createApiClient('http://localhost:8000/api');
 
 ```typescript
 import { useEffect, useRef } from 'react';
-import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@iris-core';
+import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@gaia-tools/iris-core';
 
 function ChartComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -185,7 +185,7 @@ function ChartComponent() {
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@iris-core';
+import { createApiClient, ChartWheel, convertEphemerisToRender, buildIndexes } from '@gaia-tools/iris-core';
 
 const chartContainer = ref<HTMLDivElement | null>(null);
 let chart: ChartWheel | null = null;
@@ -215,7 +215,7 @@ onUnmounted(() => {
 The `ChartWheel` component includes default styles. To customize, import the CSS:
 
 ```typescript
-import '@gaia-tools/aphrodite-core/src/ChartWheel.css';
+import '@gaia-tools/aphrodite/src/ChartWheel.css';
 ```
 
 Or provide custom `visualConfig` and `glyphConfig` options.
@@ -225,7 +225,7 @@ Or provide custom `visualConfig` and `glyphConfig` options.
 This package has peer dependencies on:
 
 - `@gaia-tools/coeus-api-client` - API client SDK
-- `@gaia-tools/aphrodite-core` - Chart rendering
+- `@gaia-tools/aphrodite` - Chart rendering
 - `@gaia-tools/aphrodite-shared` - Shared configurations
 - `d3` - D3.js for rendering
 

@@ -1,5 +1,5 @@
 {
-  "name": "@iris-core",
+  "name": "@gaia-tools/iris-core",
   "version": "0.1.0",
   "description": "Lightweight, framework-agnostic client bundle for Gaia astrological charting",
   "main": "dist/index.js",
@@ -7,9 +7,9 @@
   "module": "dist/index.mjs",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
   "files": [
@@ -33,19 +33,22 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:emmygrace/gaia-tools.git"
+    "url": "git@github.com:emmygrace/iris-core.git"
   },
-  "homepage": "https://github.com/emmygrace/gaia-tools",
+  "homepage": "https://github.com/emmygrace/iris-core",
   "bugs": {
-    "url": "https://github.com/emmygrace/gaia-tools/issues"
+    "url": "https://github.com/emmygrace/iris-core/issues"
   },
   "peerDependencies": {
-    "@gaia-tools/coeus-api-client": "^0.1.0",
-    "@gaia-tools/aphrodite-core": "^0.1.0",
+    "@gaia-tools/aphrodite": "^0.1.0",
     "@gaia-tools/aphrodite-shared": "^0.1.0",
+    "@gaia-tools/coeus-api-client": "^0.1.0",
     "d3": "^7.8.5"
   },
   "devDependencies": {
+    "@gaia-tools/aphrodite": "file:../aphrodite-core",
+    "@gaia-tools/aphrodite-shared": "file:../aphrodite-shared",
+    "@gaia-tools/coeus-api-client": "file:../coeus-api-client",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.0",
@@ -56,4 +59,3 @@
     "typescript": "^5.3.0"
   }
 }
-
