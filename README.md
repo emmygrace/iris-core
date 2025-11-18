@@ -148,6 +148,29 @@ await api.render.dashas(request);      // POST /api/vedic/dashas
 - `convertEphemerisToRender` automatically attaches the backend `vedic` payload so downstream consumers (React/Vue, etc.) can surface nakshatra placements or dashas alongside the chart.
 - `@gaia-tools/aphrodite-shared` ships a new `Vedic Natal Wheel` definition (nakshatra ring + whole-sign houses + natal planets + Navamsa overlay). Retrieve it via `getWheelDefinition('Vedic Natal Wheel')` when assembling render data.
 
+## Astrocartography & Relocation
+
+- `createApiClient` now exposes `api.astrocartography` with two helpers:
+
+```typescript
+const lines = await api.astrocartography.lines({
+  dateTime: '2024-01-01T12:00:00Z',
+  settings,
+  planetIds: ['sun', 'moon'],
+  angles: ['asc', 'mc'],
+});
+
+const relocated = await api.astrocartography.relocate({
+  dateTime: '2024-01-01T12:00:00Z',
+  settings,
+  newLocation: { lat: 51.5, lon: -0.1 },
+  positions: layer.positions,
+});
+```
+
+- Pair the FeatureCollection result with `@gaia-tools/atlas-map` to draw planetary lines on top of Leaflet/Mapbox tiles.
+- The relocation response returns a fresh `LayerPositions` object with updated cusps/angles so you can immediately re-render a relocated wheel.
+
 ## Framework Integration
 
 ### Vanilla JavaScript
