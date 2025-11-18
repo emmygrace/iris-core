@@ -94,41 +94,6 @@ export type WheelRecord = {
   config?: Record<string, any>;
 };
 
-/**
- * Legacy Chart CRUD types
- * 
- * @deprecated These types are maintained for backward compatibility.
- * Prefer using ChartDefinitionCreate and ChartDefinitionRecord for new code.
- */
-export interface ChartCreate {
-  chart_name: string;
-  chart_type: string;
-  iso_local: string; // "YYYY-MM-DDTHH:mm"
-  lat: number;
-  lon: number;
-  tzid?: string;
-  house_system?: string;
-  bodies?: string[];
-  aspects?: string[];
-  orb_deg?: number;
-  params?: Record<string, any>;
-  notes?: string | null;
-}
-
-export interface ChartUpdate {
-  chart_name?: string;
-  iso_local?: string;
-  lat?: number;
-  lon?: number;
-  tzid?: string;
-  house_system?: string;
-  bodies?: string[];
-  aspects?: string[];
-  orb_deg?: number;
-  params?: Record<string, any>;
-  notes?: string | null;
-}
-
 export interface ChartRecord {
   id: string;
   created_at: string;

@@ -56,7 +56,6 @@ export {
 // Export types from types directory
 export type {
   RenderResponse,
-  RenderRequest,
   EphemerisResponse,
   IndexesDTO,
   RingItemDTO,
@@ -65,6 +64,9 @@ export type {
   ChartSettings,
   Subject,
 } from './types';
+
+// Export RenderRequest from API
+export type { RenderRequest } from './api/render';
 
 export type {
   AspectSettings,
