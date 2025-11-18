@@ -1,0 +1,59 @@
+{
+  "name": "@iris-core",
+  "version": "0.1.0",
+  "description": "Lightweight, framework-agnostic client bundle for Gaia astrological charting",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src --ext .ts",
+    "test": "echo \"No tests yet\"",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "astrology",
+    "chart",
+    "bundle",
+    "framework-agnostic",
+    "typescript"
+  ],
+  "author": "Emmy Grace",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:emmygrace/gaia-tools.git"
+  },
+  "homepage": "https://github.com/emmygrace/gaia-tools",
+  "bugs": {
+    "url": "https://github.com/emmygrace/gaia-tools/issues"
+  },
+  "peerDependencies": {
+    "@gaia-tools/coeus-api-client": "^0.1.0",
+    "@gaia-tools/aphrodite-core": "^0.1.0",
+    "@gaia-tools/aphrodite-shared": "^0.1.0",
+    "d3": "^7.8.5"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}
+
