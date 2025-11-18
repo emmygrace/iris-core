@@ -42,13 +42,16 @@
   "peerDependencies": {
     "@gaia-tools/aphrodite": "^0.1.0",
     "@gaia-tools/aphrodite-shared": "^0.1.0",
-    "@gaia-tools/coeus-api-client": "^0.1.0",
+    "axios": "^1.6.0",
     "d3": "^7.8.5"
+  },
+  "dependencies": {
+    "@gaia-tools/aphrodite-shared": "^0.1.0"
   },
   "devDependencies": {
     "@gaia-tools/aphrodite": "file:../aphrodite-core",
     "@gaia-tools/aphrodite-shared": "file:../aphrodite-shared",
-    "@gaia-tools/coeus-api-client": "file:../coeus-api-client",
+    "axios": "^1.6.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.0",

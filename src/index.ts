@@ -37,13 +37,13 @@
  * ```
  */
 
-// Re-export API client
-export { createApiClient, type ApiClient } from '@gaia-tools/coeus-api-client';
+// Export API client
+export { createApiClient, type IrisApiClient } from './api/client';
 
 // Re-export ChartWheel from aphrodite
 export { ChartWheel, type ChartWheelOptions, type Theme } from '@gaia-tools/aphrodite';
 
-// Re-export utilities from coeus-api-client
+// Export utilities
 export {
   convertEphemerisToRender,
   buildIndexes,
@@ -51,9 +51,9 @@ export {
   WheelAssembler,
   aspectService,
   AspectService,
-} from '@gaia-tools/coeus-api-client';
+} from './utils';
 
-// Re-export types from coeus-api-client
+// Export types from types directory
 export type {
   RenderResponse,
   RenderRequest,
@@ -64,7 +64,7 @@ export type {
   AspectPairDTO,
   ChartSettings,
   Subject,
-} from '@gaia-tools/coeus-api-client';
+} from './types';
 
 export type {
   AspectSettings,
@@ -72,11 +72,10 @@ export type {
   AspectObjectRef,
   AspectPair,
   AspectSet,
-} from '@gaia-tools/coeus-api-client';
+} from './utils';
 
 // Re-export config types from aphrodite
 export type {
   VisualConfig,
   GlyphConfig,
 } from '@gaia-tools/aphrodite';
-

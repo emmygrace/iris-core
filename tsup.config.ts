@@ -8,9 +8,9 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: [
-    '@gaia-tools/coeus-api-client',
     '@gaia-tools/aphrodite',
     '@gaia-tools/aphrodite-shared',
+    'axios',
     'd3',
   ],
 });

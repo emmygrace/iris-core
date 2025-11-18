@@ -15,7 +15,7 @@ This package is designed to be framework-agnostic and can be used with vanilla J
 ## Installation
 
 ```bash
-npm install @gaia-tools/iris-core @gaia-tools/coeus-api-client @gaia-tools/aphrodite @gaia-tools/aphrodite-shared d3
+npm install @gaia-tools/iris-core @gaia-tools/aphrodite @gaia-tools/aphrodite-shared axios d3
 ```
 
 ## Quick Start
@@ -224,12 +224,26 @@ Or provide custom `visualConfig` and `glyphConfig` options.
 
 This package has peer dependencies on:
 
-- `@gaia-tools/coeus-api-client` - API client SDK
 - `@gaia-tools/aphrodite` - Chart rendering
 - `@gaia-tools/aphrodite-shared` - Shared configurations
+- `axios` - HTTP client for API requests
 - `d3` - D3.js for rendering
 
 Make sure to install these in your project.
+
+## Type Exports
+
+This package exports all types for use by other packages. You can import types from `@gaia-tools/iris-core`:
+
+```typescript
+import type {
+  RenderResponse,
+  EphemerisResponse,
+  RenderRequest,
+  IndexesDTO,
+  // ... and more
+} from '@gaia-tools/iris-core';
+```
 
 ## License
 
