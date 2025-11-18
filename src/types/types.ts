@@ -19,6 +19,17 @@ export type Subject = {
   location?: Location;
 };
 
+export type VedicConfig = {
+  includeNakshatras?: boolean;
+  includeAnglesInNakshatra?: boolean;
+  nakshatraObjects?: string[];
+  vargas?: string[];
+  includeDashas?: boolean;
+  dashaSystems?: string[];
+  dashasDepth?: 'mahadasha' | 'antardasha' | 'pratyantardasha';
+  includeYogas?: boolean;
+};
+
 export type ChartSettings = {
   zodiacType: 'tropical' | 'sidereal';
   ayanamsa?: string;
@@ -31,6 +42,7 @@ export type ChartSettings = {
     sextile: number;
   };
   includeObjects: string[];
+  vedicConfig?: VedicConfig;
 };
 
 export type ChartDefinitionCreate = {

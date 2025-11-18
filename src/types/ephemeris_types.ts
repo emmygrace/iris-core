@@ -35,10 +35,71 @@ export interface LayerResponse {
   positions: LayerPositions;
 }
 
+export interface NakshatraPlacement {
+  objectId: string;
+  longitude: number;
+  nakshatraId: string;
+  nakshatraName: string;
+  startDegree: number;
+  endDegree: number;
+  lord: string;
+  pada: number;
+  padaFraction: number;
+}
+
+export interface NakshatraLayer {
+  layerId: string;
+  placements: Record<string, NakshatraPlacement>;
+}
+
+export interface VargaPlanetPosition {
+  lon: number;
+  lat?: number | null;
+  retrograde?: boolean | null;
+}
+
+export interface VargaLayer {
+  baseLayerId: string;
+  vargaId: string;
+  label: string;
+  planets: Record<string, VargaPlanetPosition>;
+}
+
+export interface VedicLayerData {
+  layerId: string;
+  nakshatras?: NakshatraLayer | null;
+  vargas?: Record<string, VargaLayer>;
+  yogas?: Array<Record<string, string>> | null;
+}
+
+export type DashaLevel = 'mahadasha' | 'antardasha' | 'pratyantardasha';
+
+export interface DashaPeriod {
+  planet: string;
+  start: string;
+  end: string;
+  durationDays: number;
+  level: DashaLevel;
+  children?: DashaPeriod[];
+}
+
+export interface VimshottariResponse {
+  system: string;
+  depth: DashaLevel;
+  birthDateTime: string;
+  periods: DashaPeriod[];
+}
+
+export interface VedicPayload {
+  layers: Record<string, VedicLayerData>;
+  dashas?: VimshottariResponse | null;
+}
+
 // Simplified response - only ephemeris positions and settings
 export interface EphemerisResponse {
   layers: Record<string, LayerResponse>;
   settings: ChartSettings;
+  vedic?: VedicPayload | null;
 }
 
 // Export Location type for convenience

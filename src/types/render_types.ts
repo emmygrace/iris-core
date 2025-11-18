@@ -5,6 +5,7 @@
 
 // Import shared types from types.ts
 import type { Subject, ChartSettings, Location } from './types';
+import type { VedicPayload } from './ephemeris_types';
 
 // Re-export Location for convenience
 export type { Location } from './types';
@@ -184,6 +185,10 @@ export interface StaticZodiacSource {
   kind: 'static_zodiac';
 }
 
+export interface StaticNakshatraSource {
+  kind: 'static_nakshatras';
+}
+
 export interface LayerHousesSource {
   kind: 'layer_houses';
   layerId: string;
@@ -192,6 +197,12 @@ export interface LayerHousesSource {
 export interface LayerPlanetsSource {
   kind: 'layer_planets';
   layerId: string;
+}
+
+export interface LayerVargaPlanetsSource {
+  kind: 'layer_varga_planets';
+  layerId: string;
+  vargaId: string;
 }
 
 export interface AspectSetFilter {
@@ -208,8 +219,10 @@ export interface AspectSetSource {
 
 export type RingDataSource =
   | StaticZodiacSource
+  | StaticNakshatraSource
   | LayerHousesSource
   | LayerPlanetsSource
+  | LayerVargaPlanetsSource
   | AspectSetSource;
 
 // Ring Schema
@@ -239,6 +252,7 @@ export interface RenderResponse {
   layers: Record<string, LayerDTO>;
   aspects: AspectsDTO;
   wheel: WheelDTO;
+  vedic?: VedicPayload | null;
 }
 
 // IndexesDTO - used by buildIndexes utility

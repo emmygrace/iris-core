@@ -130,6 +130,24 @@ Builds a `RenderRequest` from existing `RenderResponse` data for re-rendering.
 const request = buildRenderRequestFromResponse(renderData);
 ```
 
+## Vedic / Jyotish Mode
+
+- Include a `vedicConfig` block inside `ChartSettings` to request nakshatra overlays, divisional charts, dashas, and optional yoga detection. The shape mirrors the backend schema (`includeNakshatras`, `vargas`, `includeDashas`, `dashaSystems`, etc.).
+- `EphemerisResponse.vedic` (and consequently `RenderResponse.vedic`) now carry:
+  - `layers[layerId].nakshatras` — per-object nakshatra + pada metadata.
+  - `layers[layerId].vargas` — derived D-charts such as Navamsa (`d9`) or Dasamsa (`d10`).
+  - `dashas` — Vimshottari periods down to maha/antara/pratyantara depth.
+- The render API client exposes Vedic helpers:
+
+```typescript
+const api = createApiClient('http://localhost:8000/api');
+await api.render.renderVedic(request); // POST /api/vedic/render
+await api.render.dashas(request);      // POST /api/vedic/dashas
+```
+
+- `convertEphemerisToRender` automatically attaches the backend `vedic` payload so downstream consumers (React/Vue, etc.) can surface nakshatra placements or dashas alongside the chart.
+- `@gaia-tools/aphrodite-shared` ships a new `Vedic Natal Wheel` definition (nakshatra ring + whole-sign houses + natal planets + Navamsa overlay). Retrieve it via `getWheelDefinition('Vedic Natal Wheel')` when assembling render data.
+
 ## Framework Integration
 
 ### Vanilla JavaScript

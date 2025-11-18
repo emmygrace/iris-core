@@ -25,6 +25,7 @@ import type {
 } from '../types/render_types';
 import type { AspectSet } from './aspect-service';
 import type { RingDefinition, WheelDefinition } from '@gaia-tools/aphrodite-shared/wheels';
+import type { VedicLayerData, VargaLayer } from '../types/ephemeris_types';
 
 // Sign names and glyphs
 const SIGNS: Array<[string, string]> = [
@@ -116,7 +117,8 @@ export class WheelAssembler {
     wheelConfig: WheelDefinition,
     positionsByLayer: Record<string, LayerPositions | any>,
     aspectSets: Record<string, AspectSet>,
-    includeObjects?: string[] | null
+    includeObjects?: string[] | null,
+    vedicLayers?: Record<string, VedicLayerData> | null
   ): WheelDTO {
     const rings = wheelConfig.rings || [];
     const ringDtos: RingDTO[] = [];
@@ -127,7 +129,8 @@ export class WheelAssembler {
         positionsByLayer,
         aspectSets,
         ringDtos,
-        includeObjects
+        includeObjects,
+        vedicLayers || undefined
       );
       ringDtos.push(ringDto);
     }
@@ -169,7 +172,8 @@ export class WheelAssembler {
     positionsByLayer: Record<string, LayerPositions>,
     aspectSets: Record<string, AspectSet>,
     existingRings: RingDTO[],
-    includeObjects?: string[] | null
+    includeObjects?: string[] | null,
+    vedicLayers?: Record<string, VedicLayerData>
   ): RingDTO {
     const dataSource = ringConfig.dataSource;
     let items: RingItemDTO[] | null = null;
@@ -177,6 +181,8 @@ export class WheelAssembler {
 
     if (dataSource.kind === 'static_zodiac') {
       items = WheelAssembler.buildStaticZodiacItems(slug);
+    } else if (dataSource.kind === 'static_nakshatras') {
+      items = WheelAssembler.buildStaticNakshatraItems(slug);
     } else if (dataSource.kind === 'layer_houses') {
       const layerId = dataSource.layerId;
       if (layerId && layerId in positionsByLayer) {
@@ -186,6 +192,17 @@ export class WheelAssembler {
       const layerId = dataSource.layerId;
       if (layerId && layerId in positionsByLayer) {
         items = WheelAssembler.buildPlanetItems(slug, layerId, positionsByLayer[layerId], includeObjects);
+      }
+    } else if (dataSource.kind === 'layer_varga_planets') {
+      const layerId = dataSource.layerId;
+      const vargaId = dataSource.vargaId;
+      const vargaLayers = vedicLayers?.[layerId]?.vargas;
+      if (vargaLayers && vargaId && vargaLayers[vargaId]) {
+        items = WheelAssembler.buildVargaPlanetItems(
+          slug,
+          `${layerId}_${vargaId}`,
+          vargaLayers[vargaId]
+        );
       }
     } else if (dataSource.kind === 'aspect_set') {
       const aspectSetId = dataSource.aspectSetId;
@@ -222,6 +239,34 @@ export class WheelAssembler {
    * Build 12 sign items for static zodiac ring.
    */
   private static buildStaticZodiacItems(slug: string): SignRingItem[] {
+  private static buildStaticNakshatraItems(slug: string): SignRingItem[] {
+    const items: SignRingItem[] = [];
+    const segmentSize = 360 / 27;
+    const nakshatraNames = [
+      'Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashira', 'Ardra', 'Punarvasu',
+      'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni', 'Hasta',
+      'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha', 'Mula', 'Purva Ashadha',
+      'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha', 'Purva Bhadrapada',
+      'Uttara Bhadrapada', 'Revati',
+    ];
+
+    for (let i = 0; i < nakshatraNames.length; i++) {
+      const startLon = i * segmentSize;
+      const endLon = (i + 1) * segmentSize;
+      items.push({
+        id: `${slug}_nakshatra_${i}`,
+        kind: 'sign',
+        index: i,
+        label: nakshatraNames[i],
+        glyph: null,
+        startLon,
+        endLon,
+      });
+    }
+
+    return items;
+  }
+
     const items: SignRingItem[] = [];
 
     for (let i = 0; i < SIGNS.length; i++) {
@@ -348,6 +393,30 @@ export class WheelAssembler {
   }
 
   /**
+   * Build planet items from varga layer data.
+   */
+  private static buildVargaPlanetItems(
+    slug: string,
+    syntheticLayerId: string,
+    vargaLayer: VargaLayer
+  ): PlanetRingItem[] {
+    const pseudoPositions: LayerPositions = {
+      planets: {},
+    };
+
+    for (const [planetId, planetPos] of Object.entries(vargaLayer.planets)) {
+      pseudoPositions.planets[planetId] = {
+        lon: planetPos.lon,
+        lat: planetPos.lat ?? 0,
+        speedLon: 0,
+        retrograde: planetPos.retrograde ?? false,
+      };
+    }
+
+    return WheelAssembler.buildPlanetItems(slug, syntheticLayerId, pseudoPositions);
+  }
+
+  /**
    * Build aspect items linking to planet ring items.
    */
   private static buildAspectItems(
@@ -444,6 +513,8 @@ export class WheelAssembler {
   private static convertDataSource(dataSource: RingDefinition['dataSource']): RingDataSource | null {
     if (dataSource.kind === 'static_zodiac') {
       return { kind: 'static_zodiac' };
+    } else if (dataSource.kind === 'static_nakshatras') {
+      return { kind: 'static_nakshatras' };
     } else if (dataSource.kind === 'layer_houses') {
       return {
         kind: 'layer_houses',
@@ -453,6 +524,12 @@ export class WheelAssembler {
       return {
         kind: 'layer_planets',
         layerId: dataSource.layerId,
+      };
+    } else if (dataSource.kind === 'layer_varga_planets') {
+      return {
+        kind: 'layer_varga_planets',
+        layerId: dataSource.layerId,
+        vargaId: dataSource.vargaId,
       };
     } else if (dataSource.kind === 'aspect_set') {
       const filterDict = dataSource.filter || {};

@@ -48,10 +48,17 @@ export function convertEphemerisToRender(
   };
 
   const aspectSets = aspectService.computeAllAspectSets(positionsByLayer, aspectSettings);
+  const vedicLayers = ephemerisResponse.vedic?.layers ?? null;
 
   // Assemble wheel
   const includeObjects = ephemerisResponse.settings.includeObjects || [];
-  const assembledWheel = WheelAssembler.buildWheel(wheel, positionsByLayer, aspectSets, includeObjects);
+  const assembledWheel = WheelAssembler.buildWheel(
+    wheel,
+    positionsByLayer,
+    aspectSets,
+    includeObjects,
+    vedicLayers || undefined
+  );
 
   // Convert aspect sets to AspectsDTO format
   const aspectsDTO: AspectsDTO = {
@@ -132,6 +139,7 @@ export function convertEphemerisToRender(
     layers: layersDTO,
     aspects: aspectsDTO,
     wheel: assembledWheel,
+    vedic: ephemerisResponse.vedic || null,
   };
 }
 
