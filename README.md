@@ -15,7 +15,7 @@ This package is designed to be framework-agnostic and can be used with vanilla J
 ## Installation
 
 ```bash
-npm install @gaia-tools/iris-core @gaia-tools/aphrodite @gaia-tools/aphrodite-shared axios d3
+npm install @gaia-tools/iris-core @gaia-tools/aphrodite-d3 @gaia-tools/aphrodite-shared axios d3
 ```
 
 ## Quick Start
@@ -215,7 +215,7 @@ onUnmounted(() => {
 The `ChartWheel` component includes default styles. To customize, import the CSS:
 
 ```typescript
-import '@gaia-tools/aphrodite/src/ChartWheel.css';
+import '@gaia-tools/aphrodite-d3/src/ChartWheel.css';
 ```
 
 Or provide custom `visualConfig` and `glyphConfig` options.
@@ -224,7 +224,7 @@ Or provide custom `visualConfig` and `glyphConfig` options.
 
 This package has peer dependencies on:
 
-- `@gaia-tools/aphrodite` - Chart rendering
+- `@gaia-tools/aphrodite-d3` - Chart rendering (D3-based)
 - `@gaia-tools/aphrodite-shared` - Shared configurations
 - `axios` - HTTP client for API requests
 - `d3` - D3.js for rendering

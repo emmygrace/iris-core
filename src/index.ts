@@ -41,7 +41,7 @@
 export { createApiClient, type IrisApiClient } from './api/client';
 
 // Re-export ChartWheel from aphrodite
-export { ChartWheel, type ChartWheelOptions, type Theme } from '@gaia-tools/aphrodite';
+export { ChartWheel, type ChartWheelOptions, type Theme } from '@gaia-tools/aphrodite-d3';
 
 // Export utilities
 export {
@@ -80,4 +80,4 @@ export type {
 export type {
   VisualConfig,
   GlyphConfig,
-} from '@gaia-tools/aphrodite';
+} from '@gaia-tools/aphrodite-d3';

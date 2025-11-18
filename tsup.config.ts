@@ -8,7 +8,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: [
-    '@gaia-tools/aphrodite',
+    '@gaia-tools/aphrodite-d3',
     '@gaia-tools/aphrodite-shared',
     'axios',
     'd3',
