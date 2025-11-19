@@ -156,6 +156,7 @@ export interface PlanetRingItem {
   signIndex?: number | null;
   signDegree?: number | null;
   houseIndex?: number | null;
+  displayAngle?: number; // Adjusted angle for display when collision is resolved (in degrees)
 }
 
 export interface AspectRingEndpoint {

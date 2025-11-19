@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Core - Minimal Reference</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gaia Astrological Chart</h1>
+            <p class="subtitle">Minimal reference implementation using @gaia-tools/iris-core</p>
+        </header>
+
+        <div class="content">
+            <form id="chart-form" class="chart-form">
+                <div class="form-section">
+                    <h2>Birth Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="birth-date">Birth Date</label>
+                        <input type="date" id="birth-date" required value="1990-01-01">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birth-time">Birth Time</label>
+                        <input type="time" id="birth-time" required value="12:00">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">Timezone</label>
+                        <input type="text" id="timezone" required value="America/New_York" 
+                               placeholder="America/New_York">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="latitude">Latitude</label>
+                            <input type="number" id="latitude" step="0.0001" required 
+                                   value="40.7128" placeholder="40.7128">
+                        </div>
+                        <div class="form-group">
+                            <label for="longitude">Longitude</label>
+                            <input type="number" id="longitude" step="0.0001" required 
+                                   value="-74.0060" placeholder="-74.0060">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location-name">Location Name</label>
+                        <input type="text" id="location-name" value="New York" 
+                               placeholder="City name">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Chart Settings</h2>
+                    
+                    <div class="form-group">
+                        <label for="zodiac-type">Zodiac Type</label>
+                        <select id="zodiac-type">
+                            <option value="tropical" selected>Tropical</option>
+                            <option value="sidereal">Sidereal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="house-system">House System</label>
+                        <select id="house-system">
+                            <option value="placidus" selected>Placidus</option>
+                            <option value="whole-sign">Whole Sign</option>
+                            <option value="equal">Equal</option>
+                            <option value="koch">Koch</option>
+                            <option value="regiomontanus">Regiomontanus</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Include Objects</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="objects" value="sun" checked> Sun</label>
+                            <label><input type="checkbox" name="objects" value="moon" checked> Moon</label>
+                            <label><input type="checkbox" name="objects" value="mercury" checked> Mercury</label>
+                            <label><input type="checkbox" name="objects" value="venus" checked> Venus</label>
+                            <label><input type="checkbox" name="objects" value="mars" checked> Mars</label>
+                            <label><input type="checkbox" name="objects" value="jupiter" checked> Jupiter</label>
+                            <label><input type="checkbox" name="objects" value="saturn" checked> Saturn</label>
+                            <label><input type="checkbox" name="objects" value="uranus"> Uranus</label>
+                            <label><input type="checkbox" name="objects" value="neptune"> Neptune</label>
+                            <label><input type="checkbox" name="objects" value="pluto"> Pluto</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="render-btn" class="render-btn">
+                    Render Chart
+                </button>
+            </form>
+
+            <div class="chart-section">
+                <div id="loading" class="loading hidden">
+                    <p>Loading chart data...</p>
+                </div>
+                <div id="error" class="error hidden"></div>
+                <div id="chart-container" class="chart-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dependencies - adjust paths based on your setup -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    
+    <!-- Iris Core - you'll need to build and serve this, or use a bundler -->
+    <!-- Option 1: If using a bundler like Vite/Parcel, import as ES module -->
+    <!-- Option 2: Build iris-core and serve from dist/ -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
+

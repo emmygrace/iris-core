@@ -30,6 +30,13 @@ export type VedicConfig = {
   includeYogas?: boolean;
 };
 
+export type CollisionDetectionConfig = {
+  enabled: boolean;
+  radius: number; // Collision radius in pixels at scale 1
+  scale: number; // Scale multiplier for responsive sizing
+  debug?: boolean; // Enable debug logging
+};
+
 export type ChartSettings = {
   zodiacType: 'tropical' | 'sidereal';
   ayanamsa?: string;
@@ -43,6 +50,7 @@ export type ChartSettings = {
   };
   includeObjects: string[];
   vedicConfig?: VedicConfig;
+  collisionDetection?: CollisionDetectionConfig;
 };
 
 export type ChartDefinitionCreate = {

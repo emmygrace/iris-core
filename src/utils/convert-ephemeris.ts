@@ -57,7 +57,8 @@ export function convertEphemerisToRender(
     positionsByLayer,
     aspectSets,
     includeObjects,
-    vedicLayers || undefined
+    vedicLayers || undefined,
+    ephemerisResponse.settings
   );
 
   // Convert aspect sets to AspectsDTO format

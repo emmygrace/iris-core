@@ -26,6 +26,8 @@ import type {
 import type { AspectSet } from './aspect-service';
 import type { RingDefinition, WheelDefinition } from '@gaia-tools/aphrodite-shared/wheels';
 import type { VedicLayerData, VargaLayer } from '../types/ephemeris_types';
+import type { ChartSettings } from '../types/types';
+import { resolveCollisions, type CollisionConfig } from './collision-detection';
 
 // Sign names and glyphs
 const SIGNS: Array<[string, string]> = [
@@ -118,7 +120,8 @@ export class WheelAssembler {
     positionsByLayer: Record<string, LayerPositions | any>,
     aspectSets: Record<string, AspectSet>,
     includeObjects?: string[] | null,
-    vedicLayers?: Record<string, VedicLayerData> | null
+    vedicLayers?: Record<string, VedicLayerData> | null,
+    settings?: ChartSettings
   ): WheelDTO {
     const rings = wheelConfig.rings || [];
     const ringDtos: RingDTO[] = [];
@@ -130,7 +133,8 @@ export class WheelAssembler {
         aspectSets,
         ringDtos,
         includeObjects,
-        vedicLayers || undefined
+        vedicLayers || undefined,
+        settings
       );
       ringDtos.push(ringDto);
     }
@@ -173,7 +177,8 @@ export class WheelAssembler {
     aspectSets: Record<string, AspectSet>,
     existingRings: RingDTO[],
     includeObjects?: string[] | null,
-    vedicLayers?: Record<string, VedicLayerData>
+    vedicLayers?: Record<string, VedicLayerData>,
+    settings?: ChartSettings
   ): RingDTO {
     const dataSource = ringConfig.dataSource;
     let items: RingItemDTO[] | null = null;
@@ -191,7 +196,15 @@ export class WheelAssembler {
     } else if (dataSource.kind === 'layer_planets') {
       const layerId = dataSource.layerId;
       if (layerId && layerId in positionsByLayer) {
-        items = WheelAssembler.buildPlanetItems(slug, layerId, positionsByLayer[layerId], includeObjects);
+        const centerRadius = (ringConfig.radiusInner + ringConfig.radiusOuter) / 2;
+        items = WheelAssembler.buildPlanetItems(
+          slug,
+          layerId,
+          positionsByLayer[layerId],
+          includeObjects,
+          centerRadius,
+          settings
+        );
       }
     } else if (dataSource.kind === 'layer_varga_planets') {
       const layerId = dataSource.layerId;
@@ -321,7 +334,9 @@ export class WheelAssembler {
     slug: string,
     layerId: string,
     positions: LayerPositions,
-    includeObjects?: string[] | null
+    includeObjects?: string[] | null,
+    radius?: number,
+    settings?: ChartSettings
   ): PlanetRingItem[] {
     const items: PlanetRingItem[] = [];
 
@@ -389,6 +404,19 @@ export class WheelAssembler {
       }
     }
 
+    // Apply collision detection if enabled and radius is provided
+    if (settings?.collisionDetection?.enabled && radius !== undefined && items.length > 0) {
+      const collisionConfig: CollisionConfig = {
+        enabled: settings.collisionDetection.enabled,
+        radius: settings.collisionDetection.radius ?? 10,
+        scale: settings.collisionDetection.scale ?? 1,
+        debug: settings.collisionDetection.debug ?? false,
+      };
+
+      const resolvedItems = resolveCollisions(items, radius, collisionConfig);
+      return resolvedItems;
+    }
+
     return items;
   }
 
@@ -413,7 +441,7 @@ export class WheelAssembler {
       };
     }
 
-    return WheelAssembler.buildPlanetItems(slug, syntheticLayerId, pseudoPositions);
+    return WheelAssembler.buildPlanetItems(slug, syntheticLayerId, pseudoPositions, undefined, undefined, undefined);
   }
 
   /**
