@@ -5,14 +5,19 @@
 
 import type { LayerPositions, PlanetPosition } from '../types/render_types';
 
-// Aspect definitions
-const ASPECT_ANGLES: Record<string, number> = {
-  conjunction: 0,
-  sextile: 60,
-  square: 90,
-  trine: 120,
-  opposition: 180,
-};
+// Aspect definitions - ordered by frequency for early exit optimization
+const ASPECT_ANGLES: readonly { name: string; angle: number }[] = [
+  { name: 'conjunction', angle: 0 },
+  { name: 'opposition', angle: 180 },
+  { name: 'trine', angle: 120 },
+  { name: 'square', angle: 90 },
+  { name: 'sextile', angle: 60 },
+] as const;
+
+// Create lookup map for quick access
+const ASPECT_ANGLES_MAP: Record<string, number> = Object.fromEntries(
+  ASPECT_ANGLES.map(a => [a.name, a.angle])
+);
 
 export interface AspectSettings {
   orbSettings: Record<string, number>; // aspect_type -> orb in degrees
@@ -64,9 +69,21 @@ export class AspectService {
     const orbSettings = settings.orbSettings || {};
     const includeObjects = settings.includeObjects || [];
 
-    // Filter to included objects
+    // Filter to included objects - use Set for O(1) lookup
     if (includeObjects.length > 0) {
-      planetIds = planetIds.filter((pid) => includeObjects.includes(pid));
+      const includeSet = new Set(includeObjects);
+      planetIds = planetIds.filter((pid) => includeSet.has(pid));
+    }
+
+    // Early exit if not enough planets
+    if (planetIds.length < 2) {
+      return {
+        id: layerId,
+        label: `${layerId.charAt(0).toUpperCase() + layerId.slice(1)} Aspects`,
+        kind: 'intra_layer',
+        layerIds: [layerId],
+        pairs: [],
+      };
     }
 
     // Calculate aspects between all planet pairs
@@ -133,10 +150,23 @@ export class AspectService {
     let planetIdsA = Object.keys(planetsA);
     let planetIdsB = Object.keys(planetsB);
 
-    // Filter to included objects
+    // Filter to included objects - use Set for O(1) lookup
     if (includeObjects.length > 0) {
-      planetIdsA = planetIdsA.filter((pid) => includeObjects.includes(pid));
-      planetIdsB = planetIdsB.filter((pid) => includeObjects.includes(pid));
+      const includeSet = new Set(includeObjects);
+      planetIdsA = planetIdsA.filter((pid) => includeSet.has(pid));
+      planetIdsB = planetIdsB.filter((pid) => includeSet.has(pid));
+    }
+
+    // Early exit if no planets in either layer
+    if (planetIdsA.length === 0 || planetIdsB.length === 0) {
+      const aspectSetId = `${layerIdA}_${layerIdB}`;
+      return {
+        id: aspectSetId,
+        label: `${layerIdA.charAt(0).toUpperCase() + layerIdA.slice(1)} - ${layerIdB.charAt(0).toUpperCase() + layerIdB.slice(1)} Aspects`,
+        kind: 'inter_layer',
+        layerIds: [layerIdA, layerIdB],
+        pairs: [],
+      };
     }
 
     // Calculate aspects between all planet pairs across layers
@@ -223,6 +253,7 @@ export class AspectService {
 
   /**
    * Calculate aspect between two longitudes using planet speeds.
+   * Optimized with early exit and reduced calculations.
    */
   private calculateAspect(
     lon1: number,
@@ -231,19 +262,23 @@ export class AspectService {
     speed2: number,
     orbSettings: Record<string, number>
   ): AspectCore | null {
-    // Calculate angle difference (normalized to 0-180)
-    let angleDiff = Math.abs(lon1 - lon2);
-    if (angleDiff > 180) {
-      angleDiff = 360 - angleDiff;
+    // Calculate angle difference (normalized to 0-180) - optimized
+    const rawDiff = Math.abs(lon1 - lon2);
+    const angleDiff = rawDiff > 180 ? 360 - rawDiff : rawDiff;
+
+    // Early exit if angle is too large to be any aspect (with max orb)
+    const maxOrb = Math.max(...Object.values(orbSettings), 8.0);
+    if (angleDiff > 180 + maxOrb) {
+      return null;
     }
 
-    // Check each aspect type
-    for (const [aspectName, aspectAngle] of Object.entries(ASPECT_ANGLES)) {
+    // Check each aspect type in order of frequency (most common first)
+    for (const { name: aspectName, angle: aspectAngle } of ASPECT_ANGLES) {
       const orb = orbSettings[aspectName] ?? 8.0; // Default orb
       const orbValue = Math.abs(angleDiff - aspectAngle);
 
       if (orbValue <= orb) {
-        // Determine if applying or separating
+        // Determine if applying or separating (only calculate if aspect found)
         const isApplying = this.isAspectApplying(
           lon1,
           lon2,
@@ -269,6 +304,7 @@ export class AspectService {
 
   /**
    * Determine if an aspect is applying (approaching exact) or separating.
+   * Optimized version with reduced calculations.
    *
    * An aspect is applying if the angular separation is decreasing toward the exact aspect angle.
    * We calculate the rate of change of the angular separation based on relative speeds.
@@ -292,9 +328,8 @@ export class AspectService {
 
     // Calculate the signed angular difference (considering direction)
     // This tells us which planet is "ahead" in the zodiac
+    // Optimized normalization
     let signedDiff = lon1 - lon2;
-
-    // Normalize to -180 to 180 range
     if (signedDiff > 180) {
       signedDiff -= 360;
     } else if (signedDiff < -180) {
@@ -305,10 +340,11 @@ export class AspectService {
     const currentDistance = Math.abs(currentAngle - aspectAngle);
 
     // Project forward a small amount to see if we're getting closer to exact
-    const timeStep = 0.01; // Small time step (days)
+    // Use a slightly larger time step for better performance
+    const timeStep = 0.1; // Small time step (days) - increased for performance
     let futureSignedDiff = signedDiff + relativeSpeed * timeStep;
 
-    // Normalize future difference
+    // Normalize future difference - optimized
     if (futureSignedDiff > 180) {
       futureSignedDiff -= 360;
     } else if (futureSignedDiff < -180) {

@@ -73,16 +73,16 @@ export type ChartInstanceCreate = {
     subjectId?: string;
     dateTimeSource: string;
     explicitDateTime?: string;
-    location?: Record<string, any>;
+    location?: Record<string, unknown>;
   }>;
-  settings_override?: Record<string, any>;
+  settings_override?: Record<string, unknown>;
 };
 
 export type ChartInstanceUpdate = {
   title?: string;
   wheel_id?: string;
-  layer_config?: Record<string, any>;
-  settings_override?: Record<string, any>;
+  layer_config?: Record<string, unknown>;
+  settings_override?: Record<string, unknown>;
 };
 
 export type ChartInstanceRecord = {
@@ -91,8 +91,8 @@ export type ChartInstanceRecord = {
   owner_user_id: string;
   title: string;
   wheel_id: string;
-  layer_config: Record<string, any>;
-  settings_override: Record<string, any>;
+  layer_config: Record<string, unknown>;
+  settings_override: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 };
@@ -103,7 +103,7 @@ export type WheelRecord = {
   name: string;
   description?: string;
   ownerUserId?: string;
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 };
 
 export interface ChartRecord {
@@ -121,7 +121,7 @@ export interface ChartRecord {
   bodies: string[];
   aspects: string[];
   orb_deg: number;
-  params: Record<string, any>;
+  params: Record<string, unknown>;
   notes: string | null;
 }
 

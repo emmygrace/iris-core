@@ -65,8 +65,14 @@ export type {
   Subject,
 } from './types';
 
-// Export RenderRequest from API
-export type { RenderRequest } from './api/render';
+// Export API utilities
+export { ApiCache, type CacheOptions } from './api/cache';
+export { createOfflineMode, type OfflineMode } from './api/offline';
+export { validateRenderRequest, ValidationError } from './api/validation';
+export type { LogLevel, IrisApiClientConfig } from './api/client';
+
+// Export RenderRequest and LayerConfig from API
+export type { RenderRequest, LayerConfig } from './api/render';
 
 export type {
   AspectSettings,
