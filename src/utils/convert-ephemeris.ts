@@ -4,9 +4,10 @@
  */
 
 import type { EphemerisResponse, LayerResponse } from '../types/ephemeris_types';
-import type { RenderResponse, LayerDTO, AspectsDTO, WheelDTO } from '../types/render_types';
+import type { RenderResponse, LayerDTO, AspectsDTO, WheelDTO, DignitiesDTO } from '../types/render_types';
 import type { ChartSettings } from '../types/types';
 import { aspectService } from './aspect-service';
+import { dignitiesService } from './dignities-service';
 import { WheelAssembler } from './wheel-assembler';
 import type { WheelDefinition } from '@gaia-tools/aphrodite-shared/wheels';
 import { getWheelDefinition } from '@gaia-tools/aphrodite-shared/wheels';
@@ -50,6 +51,26 @@ export function convertEphemerisToRender(
   const aspectSets = aspectService.computeAllAspectSets(positionsByLayer, aspectSettings);
   const vedicLayers = ephemerisResponse.vedic?.layers ?? null;
 
+  // Calculate dignities for all planets in all layers
+  const dignitiesDTO: DignitiesDTO = {};
+  const defaultExactExaltations = dignitiesService.getDefaultExactExaltations();
+  
+  for (const [layerId, layer] of Object.entries(ephemerisResponse.layers)) {
+    dignitiesDTO[layerId] = {};
+    const planets = layer.positions.planets || {};
+    
+    for (const [planetId, planetPos] of Object.entries(planets)) {
+      const dignities = dignitiesService.getDignities(
+        planetId,
+        planetPos.lon,
+        defaultExactExaltations
+      );
+      if (dignities.length > 0) {
+        dignitiesDTO[layerId][planetId] = dignities;
+      }
+    }
+  }
+
   // Assemble wheel
   const includeObjects = ephemerisResponse.settings.includeObjects || [];
   const assembledWheel = WheelAssembler.buildWheel(
@@ -88,8 +109,10 @@ export function convertEphemerisToRender(
           type: pair.aspect.type,
           exactAngle: pair.aspect.exactAngle,
           orb: pair.aspect.orb,
+          precision: pair.aspect.precision,
           isApplying: pair.aspect.isApplying,
           isExact: pair.aspect.isExact,
+          isRetrograde: pair.aspect.isRetrograde,
         },
         metrics: null,
       })),
@@ -140,6 +163,7 @@ export function convertEphemerisToRender(
     layers: layersDTO,
     aspects: aspectsDTO,
     wheel: assembledWheel,
+    dignities: dignitiesDTO,
     vedic: ephemerisResponse.vedic || null,
   };
 }

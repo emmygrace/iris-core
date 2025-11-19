@@ -91,8 +91,10 @@ export interface AspectCore {
   type: string; // "conjunction", "trine", ...
   exactAngle: number;
   orb: number;
+  precision: number; // Exact orb deviation in degrees
   isApplying: boolean;
   isExact: boolean;
+  isRetrograde: boolean; // True if either planet in the aspect is retrograde
 }
 
 export interface AspectMetrics {
@@ -118,6 +120,21 @@ export interface AspectSetDTO {
 
 export interface AspectsDTO {
   sets: Record<string, AspectSetDTO>;
+}
+
+// Dignities
+export type DignityType = 'rulership' | 'detriment' | 'exaltation' | 'fall' | 'exactExaltation';
+
+export interface DignityResult {
+  type: DignityType;
+  sign: string; // sign name like 'leo', 'aries'
+  degree?: number; // for exact exaltation
+}
+
+export interface DignitiesDTO {
+  [layerId: string]: {
+    [planetId: string]: DignityResult[];
+  };
 }
 
 // Wheel and Rings
@@ -253,6 +270,7 @@ export interface RenderResponse {
   layers: Record<string, LayerDTO>;
   aspects: AspectsDTO;
   wheel: WheelDTO;
+  dignities?: DignitiesDTO | null;
   vedic?: VedicPayload | null;
 }
 

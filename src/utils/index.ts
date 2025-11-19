@@ -10,4 +10,6 @@ export type {
   AspectPair,
   AspectSet,
 } from './aspect-service';
+export { dignitiesService, DignitiesService } from './dignities-service';
+export type { ExactExaltation } from './dignities-service';
 

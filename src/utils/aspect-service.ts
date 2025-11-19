@@ -29,8 +29,10 @@ export interface AspectCore {
   type: string; // "conjunction", "trine", etc.
   exactAngle: number;
   orb: number;
+  precision: number; // Exact orb deviation in degrees
   isApplying: boolean;
   isExact: boolean;
+  isRetrograde: boolean; // True if either planet in the aspect is retrograde
 }
 
 export interface AspectObjectRef {
@@ -288,13 +290,21 @@ export class AspectService {
           angleDiff
         );
         const isExact = orbValue < 0.1; // Within 0.1 degrees is "exact"
+        
+        // Determine if either planet is retrograde (negative speed)
+        const isRetrograde = (speed1 < 0) || (speed2 < 0);
+        
+        // Precision is the exact orb deviation (same as orbValue)
+        const precision = orbValue;
 
         return {
           type: aspectName,
           exactAngle: aspectAngle,
           orb: orbValue,
+          precision,
           isApplying,
           isExact,
+          isRetrograde,
         };
       }
     }
